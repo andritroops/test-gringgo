@@ -4,9 +4,6 @@ import axios from 'axios';
 
 export default function ViewProvince() {
     const [province, setProvince] = React.useState(null);
-    const [alertSuccess, setAlertSuccess] = React.useState(false);
-    const [alertError, setAlertError] = React.useState(false);
-    const [messageSuccess, setMessageSuccess] = React.useState();
 
     const id = useParams().id
 
@@ -15,7 +12,7 @@ export default function ViewProvince() {
             setProvince(response.data);
 
         });
-    }, [id, province]);
+    }, []);
 
 
     return (

@@ -2,6 +2,7 @@ import React from "react";
 import axios from 'axios';
 import DataTable from 'react-data-table-component';
 import { Link } from "react-router-dom";
+import Swal from 'sweetalert2';
 
 export default function IndexProvinces() {
     const [provinces, setProvinces] = React.useState(null);
@@ -11,10 +12,9 @@ export default function IndexProvinces() {
     const [messageSuccess, setMessageSuccess] = React.useState();
 
     React.useEffect(() => {
-        axios.get(process.env.API_URL + '/api/propinsi/list').then((response) => {
-            setProvinces(response.data);
-        });
-    }, [provinces]);
+        loadData();
+
+    }, []);
 
     const datas = provinces && provinces.data;
 
@@ -23,52 +23,66 @@ export default function IndexProvinces() {
         setPage(page);
     };
 
+    const loadData = () => {
+        axios.get(process.env.API_URL + '/api/propinsi/list').then((response) => {
+            setProvinces(response.data);
+        });
+    }
+
     const deleteHandle = async event => {
 
-        var ok = confirm("Apakah kamu yakin akan mengapus data ini?");
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const data = {
+                    id_prov: event.target.id
+                };
 
-        if (ok) {
-            console.log(event.target.id)
-            const data = {
-                id_prov: event.target.id
-            };
-          
-            axios.post(process.env.API_URL + '/api/propinsi/delete', data)
-                .then(res => {
-                    console.log(res);
-                    setAlertSuccess(true);
-                    setMessageSuccess(res.data);
-                }).catch(error => {
-                    if (error.response) {
-                        setAlertSuccess(false);
-                        setAlertError(true);
-                    }
+                axios.post(process.env.API_URL + '/api/propinsi/delete', data)
+                    .then(res => {
+                        loadData();
+                        setAlertSuccess(true);
+                        setMessageSuccess(res.data);
+                    }).catch(error => {
+                        if (error.response) {
+                            setAlertSuccess(false);
+                            setAlertError(true);
+                        }
                 });
-        }
+            }
+        })
+
+
 
     };
 
     const renderMessages = () => {
 
         if (alertSuccess && messageSuccess.status == true) {
-            return (
-                <>
-                    <div className="alert alert-success alert-dismissible fade show" role="alert">
-                        {messageSuccess.message}
-                        <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                </>
-            )
+
+            Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: messageSuccess.message,
+                showConfirmButton: false,
+                timer: 1500
+            });
         }
         else if (alertError) {
-            return (
-                <>
-                    <div className="alert alert-danger alert-dismissible fade show" role="alert">
-                        {'Delete failed.'}
-                        <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                </>
-            )
+            Swal.fire({
+                position: 'center',
+                icon: 'error',
+                title: 'Delete failed.',
+                showConfirmButton: false,
+                timer: 1500
+            });
         }
     }
 
@@ -87,8 +101,8 @@ export default function IndexProvinces() {
             name: 'Actions',
             cell: (row) => (
                 <div>
-                    <Link className="btn btn-sm btn-warning" to={`/provinces/edit/`+row.id}>Edit</Link>
-                    <Link className="btn btn-sm btn-primary mx-2" to={`/provinces/view/`+row.id}>View</Link>
+                    <Link className="btn btn-sm btn-warning" to={`/provinces/edit/` + row.id}>Edit</Link>
+                    <Link className="btn btn-sm btn-primary mx-2" to={`/provinces/view/` + row.id}>View</Link>
                     <button className="btn btn-sm btn-danger" onClick={deleteHandle} id={row.id}>Delete</button>
                 </div>
             )

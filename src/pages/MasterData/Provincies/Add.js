@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import axios from 'axios';
+import Swal from 'sweetalert2';
 
 export default function AddProvince() {
     const [alertSuccess, setAlertSuccess] = React.useState(false);
@@ -37,50 +38,44 @@ export default function AddProvince() {
     const renderErrors = () => {
 
         if (alertError && messageError.data.status4 == false) {
-            return (
-                <>
-                    <div className="alert alert-danger alert-dismissible fade show" role="alert">
-                        {messageError.data.errors}
-                        <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                </>
-            )
+            Swal.fire({
+                position: 'center',
+                icon: 'error',
+                title: messageError.data.errors,
+                showConfirmButton: false,
+                timer: 1500
+            });
         }
         else if (alertError && messageError.data.status2 ==false) {
-            return (
-                <>
-                    <div className="alert alert-danger alert-dismissible fade show" role="alert">
-                       {'Ini Kalau input ID > 100 muncul error'}
-                        <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                </>
-            )
+            Swal.fire({
+                position: 'center',
+                icon: 'error',
+                title: 'Ini Kalau input ID > 100 muncul error',
+                showConfirmButton: false,
+                timer: 1500
+            });
         }
         else if (alertError && messageError.data.status5 ==false) {
-            return (
-                <>
-                    <div className="alert alert-danger alert-dismissible fade show" role="alert">
-                       {'Form tidak boleh kosong'}
-                        <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                </>
-            )
+            Swal.fire({
+                position: 'center',
+                icon: 'error',
+                title: 'Form tidak boleh kosong',
+                showConfirmButton: false,
+                timer: 1500
+            });
         }
     }
 
     const renderSuccesses = () => {
-        if (alertSuccess) {
-            console.log(messageSuccess);
-        }
+
         if (alertSuccess && messageSuccess.status3 == true) {
-            return (
-                <>
-                    <div className="alert alert-success alert-dismissible fade show" role="alert">
-                        {messageSuccess.message}
-                        <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                </>
-            )
+            Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: messageSuccess.message,
+                showConfirmButton: false,
+                timer: 1500
+            });
         }
     }
 

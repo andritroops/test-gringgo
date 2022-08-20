@@ -1,6 +1,7 @@
 import React from "react";
 import { Link, useParams } from "react-router-dom";
 import axios from 'axios';
+import Swal from 'sweetalert2';
 
 export default function EditProvince() {
     const [province, setProvince] = React.useState(null);
@@ -11,17 +12,21 @@ export default function EditProvince() {
     const id  = useParams().id
 
     React.useEffect(() => {
+        loadData();
+    }, []);
+
+    const loadData =() =>{
+
         axios.get(process.env.API_URL + `/api/propinsi/viewedit?id_prov=`+id).then((response) => {
             setProvince(response.data);
             
         });
-    }, [id,province]);
+    }
 
 
 
     const handleSubmit = async event => {
         event.preventDefault();
-        //  console.log(province.data[0].name);
 
         const data = {
             name: event.target.name.value
@@ -33,7 +38,6 @@ export default function EditProvince() {
                 setAlertError(false);
                 setAlertSuccess(true);
                 setMessageSuccess(res.data);
-                document.getElementById("formInput").reset();
             }).catch(error => {
                 if (error.response) {
                     console.log(error.response);
@@ -46,24 +50,22 @@ export default function EditProvince() {
 
     const renderMessages = () => {
         if (alertSuccess && messageSuccess.status == true) {
-            return (
-                <>
-                    <div className="alert alert-success alert-dismissible fade show" role="alert">
-                        {messageSuccess.message}
-                        <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                </>
-            )
+            Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: messageSuccess.message,
+                showConfirmButton: false,
+                timer: 1500
+            });
         }
         else if (alertError) {
-            return (
-                <>
-                    <div className="alert alert-danger alert-dismissible fade show" role="alert">
-                        {'Delete failed.'}
-                        <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                </>
-            )
+            Swal.fire({
+                position: 'center',
+                icon: 'error',
+                title: 'Delete failed.',
+                showConfirmButton: false,
+                timer: 1500
+            });
         }
     }
  
