@@ -1,4 +1,5 @@
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
     module: {
@@ -23,6 +24,10 @@ module.exports = {
     plugins: [
         new CleanWebpackPlugin({
             cleanAfterEveryBuildPatterns: ['dist']
+        }),
+        new HtmlWebpackPlugin({
+            template: "./src/index.html",
+            filename: "index.html"
         })
     ]
 }

@@ -22,7 +22,7 @@ module.exports = merge(common, {
   ],
   output: {
     filename: "bundle.js",
-    path: path.join(__dirname,'/dist'),
+    path: path.resolve(__dirname, './dist'),
     publicPath: "/",
   },
 });
